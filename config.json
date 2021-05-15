@@ -1,0 +1,7 @@
+{
+    "sourceDir": "examples/source",
+    "outDir": "examples/out",
+    "ignoreWarnings" : false,
+    "ignoreErrors" : false,
+    "forceOpen" : true
+}

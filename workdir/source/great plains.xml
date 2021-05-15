@@ -1,0 +1,18 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+
+<!-- THIS XML WAS GENERATED FROM AN .XTS SCRIPT                  -->
+<!-- Original script: `workdir/source/great plains.xts`          -->
+<!-- Conversion date: `14.05.2021`                               -->
+
+<mapinfo
+  details = "28599"
+  imagepath = "ui\random_map\great_plains"
+  displayNameID = "28598"
+  cannotReplace = ""
+  loadDetails = "35943"
+  loadBackground = "ui\random_map\great_plains\great_plains_map"
+>
+    <loadss>ui\random_map\great_plains\great_plains_ss_01</loadss>
+    <loadss>ui\random_map\great_plains\great_plains_ss_02</loadss>
+    <loadss>ui\random_map\great_plains\great_plains_ss_03</loadss>
+</mapinfo>
