@@ -1,5 +1,5 @@
 import {int, float, double, vector, long} from "./Types";
-import {Water, Cliff, Forest, Mix} from "./Terrain";
+import {Water, Cliff, Forest, Mix} from "./extensions/TAD/Terrain";
 
 /**
  * Adds a class for an area's cliff edge to avoid.

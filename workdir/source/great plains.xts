@@ -2,8 +2,8 @@
 /**
  * -----------------------------------------------------
  * THIS SCRIPT WAS GENERATED FROM AN .XS SCRIPT
- * Original script: `../great plains.xs`
- * Conversion date: `14.05.2021`
+ * Original script: `workdir/source/great plains.xts`
+ * Conversion date: `17.05.2021`
  * -----------------------------------------------------
  */
 
@@ -20,9 +20,10 @@ import {rmAddTriggerCondition, rmAddTriggerEffect, rmAddUnitsToArmy, rmCreateArm
 import {rmAreaFractionToTiles, rmAreaTilesToFraction, rmDegreesToRadians, rmMetersToTiles, rmTilesToMeters, rmXFractionToMeters, rmXFractionToTiles, rmXMetersToFraction, rmXTilesToFraction, rmZFractionToMeters, rmZFractionToTiles, rmZMetersToFraction, rmZTilesToFraction} from "../lib/Converter";
 import {rmCreateGrouping, rmSetGroupingMinDistance, rmSetGroupingMaxDistance, rmAddGroupingConstraint, rmAddGroupingToClass, rmPlaceGroupingAtLoc} from "../lib/Grouping";
 import {rmRiverCreate, rmRiverAddWaypoint, rmRiverSetShallowRadius, rmRiverAddShallow, rmRiverSetBankNoiseParams, rmRiverBuild, rmRiverSetConnections} from "../lib/River";
-import {cMapSize, cNumberNonGaiaPlayers, cNumberPlayers, cNumberTeams, rmClassID, rmDefineClass, rmDefineConstant, rmEchoError, rmEchoInfo, rmEchoWarning, rmGetSeaLevel, rmRandFloat, rmRandInt, rmSetGaiaCiv, rmSetLightingSet, rmSetMapSize, rmSetSeaLevel, rmSetSeaType, rmSetStatusText, rmTerrainInitialize, sqrt, rmGetCivID, rmAllocateSubCivs, rmSetSubCiv, rmSetWindMagnitude, rmSetGlobalRain, rmSetMapElevationParameters, rmSetBaseTerrainMix, rmSetMapType, rmSetWorldCircleConstraint, rmGetMapXSize, rmGetNomadStart, rmGetUnitPosition, cElevTurbulence, rmFindClosestPointVector, rmFindClosestPoint, rmSetNuggetDifficulty, rmGetIsKOTH, rmAddMerc, rmEnableLocalWater, rmFindCloserArea, rmIsMapType, rmGetHomeCityLevel, rmGetHighHomeCityLevel, rmGetAverageHomeCityLevel, rmGetLowHomeCityLevel} from "../lib/RandomMap";
+import {cMapSize, cNumberNonGaiaPlayers, cNumberPlayers, cNumberTeams, rmClassID, rmDefineClass, rmDefineConstant, rmEchoError, rmEchoInfo, rmEchoWarning, rmGetSeaLevel, rmRandFloat, rmRandInt, rmSetGaiaCiv, rmSetLightingSet, rmSetMapSize, rmSetSeaLevel, rmSetSeaType, rmSetStatusText, rmTerrainInitialize, sqrt, rmGetCivID, rmAllocateSubCivs, rmSetSubCiv, rmSetWindMagnitude, rmSetGlobalRain, rmSetGlobalSnow, rmSetMapElevationParameters, rmSetBaseTerrainMix, rmSetMapType, rmSetWorldCircleConstraint, rmGetMapXSize, rmGetNomadStart, rmGetUnitPosition, cElevTurbulence, rmFindClosestPointVector, rmFindClosestPoint, rmSetNuggetDifficulty, rmGetIsKOTH, rmAddMerc, rmEnableLocalWater, rmFindCloserArea, rmIsMapType, rmGetHomeCityLevel, rmGetHighHomeCityLevel, rmGetAverageHomeCityLevel, rmGetLowHomeCityLevel, rmGetIsFFA} from "../lib/RandomMap";
 import {rmCreateTradeRoute, rmAddTradeRouteWaypoint, rmAddRandomTradeRouteWaypoints, rmBuildTradeRoute, rmGetTradeRouteWayPoint, rmCreateTradeRouteWaypointsInArea, rmAddRandomTradeRouteWaypointsVector} from "../lib/TradeRoute";
-import {River, Ocean, Lake, Cliff, MapType, Water, Mix, Forest} from "../lib/Terrain";
+import {River, Ocean, Lake, Cliff, MapType, Water, Mix, Forest} from "../lib/extensions/TAD/Terrain";
+import {rmIsObserverMode, rmIsSummerVariant, rmIsWinterVariant, rmIsSpecialEventVariant, rmIsUnexpectedEventsVariant, rmGetMapVariant, trCreateDefendPlan2, activateAprilFoolsTextures, deactivateAprilFoolsTextures, rmActivateRandomEvents, setFastPlaybackFactor, saveUnresponsiveGame, uiToggleUnitPathSimple, uiShowUnitPathSimple, uiHideUnitPathSimple, uiToggleUnitPathRough, uiShowUnitPathRough, uiHideUnitPathRough, uiToggleUnitGatherPointPath, uiShowUnitGatherPointPath, uiHideUnitGatherPointPath, trClearObserverOwnedObjects, setSquadModeByIndex, bUnitGetNumberTargeters, kbUnitGetNumberWorkersIfSeeable, kbUnitIsInventoryFull, kbUnitGetCurrentInventory, kbUnitGetInventoryCapacity} from "../lib/extensions/UHC/UHC";
 
 
 /**
@@ -51,9 +52,10 @@ const mapinfo = {
 
 // GREAT PLAINS
 // Nov 06 - YP update
-import {chooseMercs} from "../lib/includes/mercenaries";
-import {ypIsAsian, ypTCChooser, ypMonasteryBuilder, ypRicePaddyBuilder} from "../lib/includes/ypAsianInclude";
-import {ypKingsHillPlacer, ypKingsHillLandfill} from "../lib/includes/ypKOTHInclude";
+
+import { chooseMercs } from "../lib/includes/mercenaries";
+import { ypIsAsian, ypTCChooser, ypMonasteryBuilder, ypRicePaddyBuilder } from "../lib/includes/ypAsianInclude";
+import { ypKingsHillPlacer, ypKingsHillLandfill } from "../lib/includes/ypKOTHInclude";
 
 /**
  * Main entry point for random map script
@@ -191,7 +193,7 @@ function main(): void {
 	var shortAvoidImpassableLand: int = rmCreateTerrainDistanceConstraint("short avoid impassable land", "Land", false, 2.0);
 	var patchConstraint: int = rmCreateClassDistanceConstraint("patch vs. patch", rmClassID("classPatch"), 5.0);
 
-	// Unit avoidance - for things that aren't in the starting resources.
+	// Unit avoidance - for things that aren"t in the starting resources.
 	var avoidStartingUnits: int = rmCreateClassDistanceConstraint("objects avoid starting units", rmClassID("startingUnit"), 30.0);
 	var avoidStartingUnitsSmall: int = rmCreateClassDistanceConstraint("objects avoid starting units small", rmClassID("startingUnit"), 5.0);
 
@@ -297,11 +299,11 @@ function main(): void {
 	// Place the first team.
    rmSetPlacementTeam(0);
 	if ( whichMap == 1 ) // se trade route
-	{
+	 {
 		rmSetPlayerPlacementArea(0.7, 0.5, 0.9, 0.8);
 	}
 	else
-	{
+	 {
 		rmSetPlayerPlacementArea(0.7, 0.2, 0.9, 0.5);
 	}
    rmPlacePlayersCircular(0.3, 0.4, rmDegreesToRadians(5.0));
@@ -309,11 +311,11 @@ function main(): void {
 	// Now place Second Team
    rmSetPlacementTeam(1);
 		  if ( whichMap == 1 ) // nw trade route
-	{
+	 {
 		rmSetPlayerPlacementArea(0.1, 0.5, 0.3, 0.8);
 	}
 	else
-	{
+	 {
 		rmSetPlayerPlacementArea(0.1, 0.2, 0.3, 0.5);
 	}
    rmPlacePlayersCircular(0.3, 0.4, rmDegreesToRadians(5.0));
@@ -323,7 +325,7 @@ function main(): void {
 
 	// Set up player areas.
 	var playerFraction: float = rmAreaTilesToFraction(100);
-	for (var i = 1; i < cNumberPlayers; i++) {
+	for(var i = 1; i < cNumberPlayers; i++) {
 		// Create the area.
 		var id: int = rmCreateArea("Player" + i);
 		// Assign to the player.
@@ -459,7 +461,7 @@ function main(): void {
 	var silverType: int = -1;
 	var playerGoldID: int = -1;
 
-	for (var i = 1; i < cNumberPlayers; i++) {
+	for(var i = 1; i < cNumberPlayers; i++) {
 		rmPlaceObjectDefAtLoc(startingTCID, i, rmPlayerLocXFraction(i), rmPlayerLocZFraction(i));
 
 		if (ypIsAsian(i) && rmGetNomadStart() == false)
@@ -660,13 +662,13 @@ function main(): void {
 	// Text
 	rmSetStatusText("", 0.70);
 
-	// Ponds o' Fun
+	// Ponds o" Fun
 	var pondClass: int = rmDefineClass("pond");
 	var pondConstraint: int = rmCreateClassDistanceConstraint("ponds avoid ponds", rmClassID("pond"), 60.0);
 
 	// int numPonds=rmRandInt(1,4);
 	var numPonds: int = 4;
-	for (var i = 0; i < numPonds; i++) {
+	for(var i = 0; i < numPonds; i++) {
 		var smallPondID: int = rmCreateArea("small pond" + i);
 		rmSetAreaSize(smallPondID, rmAreaTilesToFraction(170), rmAreaTilesToFraction(200));
 		rmSetAreaWaterType(smallPondID, "great plains pond");
@@ -694,7 +696,7 @@ function main(): void {
 	// Build grassy areas everywhere.  Whee!
 	numTries = 6 * cNumberNonGaiaPlayers;
 	failCount = 0;
-	for (var i = 0; i < numTries; i++) {
+	for(var i = 0; i < numTries; i++) {
 		var grassyArea: int = rmCreateArea("grassyArea" + i);
 		rmSetAreaWarnFailure(grassyArea, false);
 		rmSetAreaSize(grassyArea, rmAreaTilesToFraction(1000), rmAreaTilesToFraction(1000));
@@ -723,7 +725,7 @@ function main(): void {
 	var silverCount: int = (cNumberNonGaiaPlayers * 3);
 	rmEchoInfo("silver count = " + silverCount);
 
-	for (var i = 0; i < silverCount; i++) {
+	for(var i = 0; i < silverCount; i++) {
 		silverType = rmRandInt(1, 10);
 		silverID = rmCreateObjectDef("silver " + i);
 		rmAddObjectDefItem(silverID, "mine", 1, 0.0);
@@ -789,7 +791,7 @@ function main(): void {
 	var maxCount: int = 20 * cNumberNonGaiaPlayers;
 	var maxFailCount: int = 10 * cNumberNonGaiaPlayers;
 	failCount = 0;
-	for (var i = 1; i < 10; i++) {
+	for(var i = 1; i < 10; i++) {
 		var treeArea: int = rmCreateArea("se tree" + i);
 		rmSetAreaSize(treeArea, 0.001, 0.003);
 		rmSetAreaForestType(treeArea, "great plains forest");
@@ -825,7 +827,7 @@ function main(): void {
 	var maxFails: int = 5 * cNumberNonGaiaPlayers;
 	count = 0;
 	failCount = 0;
-	for (var i = 1; i < 10; i++) {
+	for(var i = 1; i < 10; i++) {
 		treeArea = rmCreateArea("nw tree" + i);
 		rmSetAreaSize(treeArea, 0.001, 0.003);
 		rmSetAreaForestType(treeArea, "great plains forest");
@@ -860,7 +862,7 @@ function main(): void {
 	var forestTreeID: int = 0;
 	numTries = 5 * cNumberNonGaiaPlayers;
 	failCount = 0;
-	for (var i = 0; i < numTries; i++) {
+	for(var i = 0; i < numTries; i++) {
 		var forest: int = rmCreateArea("center forest " + i);
 		rmSetAreaWarnFailure(forest, false);
 		rmSetAreaSize(forest, rmAreaTilesToFraction(100), rmAreaTilesToFraction(100));
@@ -905,7 +907,7 @@ function main(): void {
 		rmEchoInfo("XLOC = " + yLoc);
 	}
 
-	// 50% chance of buffalo carcasses - either one or two if they're there.
+	// 50% chance of buffalo carcasses - either one or two if they"re there.
 	var areThereBuffalo: int = rmRandInt(1, 2);
 	var howManyBuffalo: int = rmRandInt(1, 2);
 	if (areThereBuffalo == 1) {
@@ -947,7 +949,7 @@ function main(): void {
 	var grassPatchGroup: int = -1;
 	// Two grass patches per player.
 
-	for (var i = 1; i < 2 * cNumberNonGaiaPlayers; i++) {
+	for(var i = 1; i < 2 * cNumberNonGaiaPlayers; i++) {
 		grassPatchGroupType = rmRandInt(1, 7);
 		grassPatchGroup = rmCreateGrouping("Grass Patch Group" + i, "gp_grasspatch0" + grassPatchGroupType);
 		rmSetGroupingMinDistance(grassPatchGroup, 0.0);
@@ -968,7 +970,7 @@ function main(): void {
 	var flowerPatchGroup: int = -1;
 
 	// Also two "flowers" per player.
-	for (var i = 1; i < 2 * cNumberNonGaiaPlayers; i++) {
+	for(var i = 1; i < 2 * cNumberNonGaiaPlayers; i++) {
 		flowerPatchGroupType = rmRandInt(1, 8);
 		flowerPatchGroup = rmCreateGrouping("Flower Patch Group" + i, "gp_flower0" + flowerPatchGroupType);
 		rmSetGroupingMinDistance(flowerPatchGroup, 0.0);

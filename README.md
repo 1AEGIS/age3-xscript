@@ -12,16 +12,25 @@ This is an .XS/.XTS - limited TypeScript language - code transpiler. It allows y
 1) Install [Node.js](https://nodejs.org/en/). Chances are, if you want to use TypeScript you already have it.
 
 2) Unpack the .ZIP and, if you like, move the contents of the included **`workdir`** to your desired location.
-    - For example, if you're working on a mod you can move them straight to your game's random maps folder (i. e. *`Age of .../RM3`*). Note that this can change the game's CRC, rendering it incompatible for multiplayer, so you should only do this temporarily, for production.
-    - If you're making TAD custom maps, you could move them to the *`Documents/My Games/Age of .../RM3`*.
-    - Or you could just leave it as is and only change the **`outDir`** in the config file. Just make sure that the **`sourceDir`** has a **`lib`** folder as a "sibling" for the TypeScript imports to work properly.
+ - For example, if you're working on a mod you can move them straight to your game's random maps folder (i. e. *`Age of .../RM3`*). Note that this can change the game's CRC, rendering it incompatible for multiplayer, so you should only do this temporarily, for production.
+ - If you're making TAD custom maps, you could move them to the *`Documents/My Games/Age of .../RM3`*.
+ - Or you could just leave it as is and only change the **`outDir`** in the config file. Just make sure that the **`sourceDir`** has a **`lib`** folder as a "sibling" for the TypeScript imports to work properly.
 
 3) Edit the **`config.json`** accordingly. Here are the options:
-    - **`sourceDir`** - your .XTS map scripts folder. TypeScript code will be saved here after the conversion. Has to be a valid, existing path with the included **`lib`** folder as its "sibling".
-    - **`outDir`** - your resulting .XS maps folder. Transpiled maps and their .XML info files will be saved here. Has to be a valid, existing path.
-    - **`ignoreWarnings`** - do not show non-critical errors and warnings.
-    - **`ignoreErrors`** - suppress even the critical errors, such as .XS syntax errors
-    - **`forceOpen`** - if a file can't be found, look for it in the **`sourceDir`** and **`outDir`** folders.
+ - **`sourceDir`** - your .XTS map scripts folder. TypeScript code will be saved here after the conversion. Has to be a valid, existing path with the included **`lib`** folder as its "sibling".
+ - **`outDir`** - your resulting .XS maps folder. Transpiled maps and their .XML info files will be saved here. Has to be a valid, existing path.
+ - **`libDir`** - full or *relative to the **`sourceDir`*** path to the included **`lib`** folder with **`.d.ts`** type declarations. The default value is alright provided this **`lib`** folder is a sibling of the **`sourceDir`**.
+ - **`ignoreWarnings`** - do not show non-critical errors and warnings.
+ - **`ignoreErrors`** - suppress even the critical errors, such as .XS syntax errors
+ - **`forceOpen`** - if a file can't be found, look for it in the **`sourceDir`** and **`outDir`** folders.
+ - **`extensions`** - a list of extensions for the transpiler. For now only contains additional type declarations:
+    - Vanilla - terrain types for the vanilla Age of Empires III maps
+    - TWC - terrain types for The Warchief maps
+    - TAD - terrain types for The Asian Dynasties maps (includes TWC and Vanilla types, too)
+    - UHC - functions for mods that use UHC (or UHC2)
+    - TNE - terrain types for The Native Empires mod maps (includes TAD types and UHC functions, too)
+
+    Just leave the default value unless you want to make some very specific map. If you make a map for a mod, you can add your own extension - just explore the structure of *`extensions\TNE\index.xts`*, *`extensions\TNE\Terrain.d.ts`* and *`workdir\lib\extensions\TNE\Terrain.d.ts`* (the last two are the same).
 
 4) To use the potential of XTS, use an IDE such as [Visual Studio Code](https://code.visualstudio.com/download) for syntax highlighting and autocomplete.
 If you *are* using VS Code, [set .XTS file extensions to TypeScript language](https://stackoverflow.com/questions/29973619/how-to-make-vs-code-to-treat-other-file-extensions-as-certain-language) by default. Alternatively, select the language manually in the bottom right.
@@ -226,15 +235,13 @@ rmSetAreaMix(areaID, non_existent_mix as Mix); // Works, but only do this if you
 
 Here are all the types for which this is the case:
 **`River, Ocean, Lake, Water (=River|Ocean|Lake), Cliff, MapType, Mix, Forest`**
+The allowed values for these types depend on the extensions you've enabled.
 
 #### **Got it, but I'm writing maps for a mod that has new terrain.**
-Then you can either use **`as`** or, to get proper autocomplete, edit the *`lib/Terrain.d.ts`*, adding your new terrain to the corresponding types. In the future I plan to implement some sort of extensions functionality to swap enums and RM functions based on the mod you're scripting for.
-
-#### **What are these new terrain enums?**
-Apart from the usual TAD terrain enums, you could have noticed new ones, such as a `african_prairie` mix, or `Korea Coast` ocean, etc. These are from my The Native Empires mod, and you should just ignore them. In the future I plan to implement some sort of extensions functionality and move these TNE-specific enums to a separate file.
+Then you can either use **`as`** or, to get proper autocomplete, make an extension for your mod - just explore the structure of *`extensions\TNE\index.xts`*, *`extensions\TNE\Terrain.d.ts`* and *`workdir\lib\extensions\TNE\Terrain.d.ts`* (the last two are the same) and make o copy with your mod's terrain.
 
 #### **Will this work with DE?**
-There are no guarantees, but provided DE's RMS structure stays the same, it should work.
+There are no guarantees, but provided DE's RMS structure stays the same, it should work. Some terrain types and function declarations must be missing though, unless somebody makes an extension for DE.
 
 #### **Why can't the converter save the files?**
 Make sure the paths specified in your **`config.json`** exist and comply with the location of your **`workdir`**.
@@ -250,4 +257,4 @@ C:\Users\Jeremy\Documents\My Games\Age of Empires III\RM3> node 'C:\Users\Jeremy
 to first convert to XTS and then immediately back to XS. The reason you may want this is to tidy up an existing map with the included *Prettier* code formatter.
 
 #### **I've found a bug. How can I report it?**
-Please contact me on Discord, via [e-mail](keremey@mail.ru) or on [moddb](https://www.moddb.com/members/keremey57).
+Please open an issue [here](https://gitlab.com/KEremey/XScript/-/issues/new) or contact me on Discord, via [e-mail](keremey@mail.ru) or on [moddb](https://www.moddb.com/members/keremey57).

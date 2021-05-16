@@ -17,18 +17,29 @@ let OUT_PATH = "examples/out";
 let IGNORE_WARNINGS = false;
 let IGNORE_ERRORS = false;
 let FORCE_OPEN = false;
+let EXTENSIONS = ["TAD"];
+let LIB_PATH = "../../lib";
 const DATE = (new Date()).toLocaleDateString();
 let config;
 if (fs.existsSync(CONFIG_PATH))
     config = JSON.parse(fs.readFileSync(CONFIG_PATH).toString());
 else
     console.log(`\x1b[1m\x1b[43m Warning \x1b[40m  -  File does not exist:\x1b[0m
-     \x1b[90mconfig not found: \x1b[33m${CONFIG_PATH}\x1b[0m\n`);
-SOURCE_PATH = config.sourceDir;
-OUT_PATH = config.outDir;
-IGNORE_WARNINGS = config.ignoreWarnings;
-IGNORE_ERRORS = config.ignoreErrors;
-FORCE_OPEN = config.forceOpen;
+    \x1b[90mconfig not found: \x1b[33m${CONFIG_PATH}\x1b[0m\n`);
+if (config.sourceDir !== undefined)
+    SOURCE_PATH = config.sourceDir;
+if (config.outDir !== undefined)
+    OUT_PATH = config.outDir;
+if (config.ignoreWarnings !== undefined)
+    IGNORE_WARNINGS = config.ignoreWarnings;
+if (config.ignoreErrors !== undefined)
+    IGNORE_ERRORS = config.ignoreErrors;
+if (config.forceOpen !== undefined)
+    FORCE_OPEN = config.forceOpen;
+if (config.extensions !== undefined)
+    EXTENSIONS = config.extensions;
+if (config.libDir !== undefined)
+    LIB_PATH = config.libDir;
 function XStoTypeScript(filename, isInclude = false) {
     var _a, _b, _c, _d, _e, _f;
     if (!fs.existsSync(filename) && FORCE_OPEN) {
@@ -148,6 +159,17 @@ const mapinfo = {
             console.log(e);
         }
     }
+    let extensions = '';
+    EXTENSIONS.forEach(ext => {
+        try {
+            extensions += `${fs.readFileSync(`./extensions/${ext}/index.xts`).toString()}\n`;
+        }
+        catch (e) {
+            if (!IGNORE_ERRORS)
+                console.log(`\x1b[1m\x1b[41m ExtensionError \x1b[40m  -  File does not exist:\x1b[0m
+         \x1b[90mfile not found: \x1b[33m./extensions/${ext}/index.xts\x1b[0m\n`);
+        }
+    });
     xts = `
 /**
  * -----------------------------------------------------
@@ -159,22 +181,20 @@ const mapinfo = {
 
 
 
-import {int, float, double, vector, long, resource, meters, fraction, xsVectorGetX, xsVectorGetY, xsVectorGetZ, xsVectorLength, xsVectorNormalize, xsVectorSet, xsVectorSetX, xsVectorSetY, xsVectorSetZ, cOriginVector} from "../lib/Types";
-import {rmAddAreaCliffEdgeAvoidClass, rmAddAreaConstraint, rmAddAreaInfluencePoint, rmAddAreaInfluenceSegment, rmAddAreaRemoveType, rmAddAreaTerrainLayer, rmAddAreaTerrainReplacement, rmAddAreaToClass, rmAreaID, rmBuildAllAreas, rmBuildArea, rmCreateArea, rmPaintAreaTerrain, rmSetAreaBaseHeight, rmSetAreaCliffEdge, rmSetAreaCliffHeight, rmSetAreaCliffPainting, rmSetAreaCliffType, rmSetAreaCoherence, rmSetAreaForestType, rmSetAreaHeightBlend, rmSetAreaLocation, rmSetAreaLocPlayer, rmSetAreaLocTeam, rmSetAreaMaxBlobDistance, rmSetAreaMaxBlobs, rmSetAreaMinBlobDistance, rmSetAreaMinBlobs, rmSetAreaSize, rmSetAreaSmoothDistance, rmSetAreaTerrainLayerVariance, rmSetAreaTerrainType, rmSetAreaWarnFailure, rmSetAreaWaterType, rmSetAreaMix, rmSetAreaElevationType, rmSetAreaElevationVariation, rmSetAreaElevationMinFrequency, rmSetAreaElevationOctaves, rmSetAreaElevationPersistence, rmSetAreaElevationNoiseBias, rmSetAreaForestDensity, rmSetAreaForestClumpiness, rmSetAreaForestUnderbrush, rmAddAreaCliffRandomWaypoints, rmAddAreaCliffWaypoint, rmSetAreaElevationEdgeFalloffDist, rmSetAreaEdgeFilling} from "../lib/Area";
-import {rmAddConnectionArea, rmAddConnectionConstraint, rmAddConnectionEndConstraint, rmAddConnectionStartConstraint, rmAddConnectionTerrainReplacement, rmAddConnectionToClass, rmBuildConnection, rmCreateConnection, rmSetConnectionBaseHeight, rmSetConnectionBaseTerrainCost, rmSetConnectionCoherence, rmSetConnectionHeightBlend, rmSetConnectionPositionVariance, rmSetConnectionSmoothDistance, rmSetConnectionTerrainCost, rmSetConnectionType, rmSetConnectionWarnFailure, rmSetConnectionWidth} from "../lib/Connection";
-import {rmConstraintID, rmCreateAreaConstraint, rmCreateAreaDistanceConstraint, rmCreateAreaMaxDistanceConstraint, rmCreateAreaOverlapConstraint, rmCreateBoxConstraint, rmCreateClassDistanceConstraint, rmCreateCliffEdgeConstraint, rmCreateCliffEdgeDistanceConstraint, rmCreateCliffEdgeMaxDistanceConstraint, rmCreateCliffRampConstraint, rmCreateCliffRampDistanceConstraint, rmCreateCliffRampMaxDistanceConstraint, rmCreateEdgeConstraint, rmCreateEdgeDistanceConstraint, rmCreateEdgeMaxDistanceConstraint, rmCreateTerrainDistanceConstraint, rmCreateTerrainMaxDistanceConstraint, rmCreateTypeDistanceConstraint, rmCreatePieConstraint, rmCreateTradeRouteDistanceConstraint, rmSetAreaObeyWorldCircleConstraint, rmCreateHCGPConstraint, rmClearClosestPointConstraints, rmAddClosestPointConstraint, rmCreateMaxHeightConstraint} from "../lib/Constraint";
-import {rmAddFairLoc, rmAddFairLocConstraint, rmFairLocXFraction, rmFairLocZFraction, rmGetNumberFairLocs, rmPlaceFairLocs, rmResetFairLocs} from "../lib/FairLoc";
-import {rmAddObjectDefConstraint, rmAddObjectDefItem, rmAddObjectDefToClass, rmCreateObjectDef, rmGetNumberUnitsPlaced, rmGetUnitPlaced, rmGetUnitPlacedOfPlayer, rmPlaceObjectDefAtAreaLoc, rmPlaceObjectDefAtLoc, rmPlaceObjectDefAtRandomAreaOfClass, rmPlaceObjectDefInArea, rmPlaceObjectDefInRandomAreaOfClass, rmPlaceObjectDefPerPlayer, rmSetIgnoreForceToGaia, rmSetObjectDefMaxDistance, rmSetObjectDefMinDistance, rmCreateStartingUnitsObjectDef, rmSetObjectDefAllowOverlap, rmSetObjectDefTradeRouteID, rmPlaceObjectDefAtPoint, rmSetObjectDefHerdAngle, rmSetObjectDefCreateHerd, rmSetObjectDefGarrisonStartingUnits, rmSetObjectDefGarrisonSecondaryUnits} from "../lib/ObjectDef";
-import {rmAddPlayerResource, rmGetNumberPlayersOnTeam, rmGetPlayerCiv, rmGetPlayerCulture, rmGetPlayerName, rmGetPlayerTeam, rmMultiplyPlayerResource, rmPlacePlayer, rmPlacePlayersCircular, rmPlacePlayersLine, rmPlacePlayersSquare, rmPlayerLocXFraction, rmPlayerLocZFraction, rmSetPlacementSection, rmSetPlacementTeam, rmSetPlayerArea, rmSetPlayerLocation, rmSetPlayerPlacementArea, rmSetPlayerResource, rmSetTeamArea, rmSetTeamSpacingModifier} from "../lib/Player";
-import {rmAddTriggerCondition, rmAddTriggerEffect, rmAddUnitsToArmy, rmCreateArmy, rmCreateTrigger, rmSetTriggerActive, rmSetTriggerConditionParam, rmSetTriggerConditionParamArmy, rmSetTriggerConditionParamFloat, rmSetTriggerConditionParamInt, rmSetTriggerEffectParam, rmSetTriggerEffectParamArmy, rmSetTriggerEffectParamFloat, rmSetTriggerEffectParamInt, rmSetTriggerLoop, rmSetTriggerPriority, rmSetTriggerRunImmediately, rmSetVCFile, rmSwitchToTrigger, rmTriggerID} from "../lib/Trigger";
-import {rmAreaFractionToTiles, rmAreaTilesToFraction, rmDegreesToRadians, rmMetersToTiles, rmTilesToMeters, rmXFractionToMeters, rmXFractionToTiles, rmXMetersToFraction, rmXTilesToFraction, rmZFractionToMeters, rmZFractionToTiles, rmZMetersToFraction, rmZTilesToFraction} from "../lib/Converter";
-import {rmCreateGrouping, rmSetGroupingMinDistance, rmSetGroupingMaxDistance, rmAddGroupingConstraint, rmAddGroupingToClass, rmPlaceGroupingAtLoc} from "../lib/Grouping";
-import {rmRiverCreate, rmRiverAddWaypoint, rmRiverSetShallowRadius, rmRiverAddShallow, rmRiverSetBankNoiseParams, rmRiverBuild, rmRiverSetConnections} from "../lib/River";
-import {cMapSize, cNumberNonGaiaPlayers, cNumberPlayers, cNumberTeams, rmClassID, rmDefineClass, rmDefineConstant, rmEchoError, rmEchoInfo, rmEchoWarning, rmGetSeaLevel, rmRandFloat, rmRandInt, rmSetGaiaCiv, rmSetLightingSet, rmSetMapSize, rmSetSeaLevel, rmSetSeaType, rmSetStatusText, rmTerrainInitialize, sqrt, rmGetCivID, rmAllocateSubCivs, rmSetSubCiv, rmSetWindMagnitude, rmSetGlobalRain, rmSetGlobalSnow, rmSetMapElevationParameters, rmSetBaseTerrainMix, rmSetMapType, rmSetWorldCircleConstraint, rmGetMapXSize, rmGetNomadStart, rmGetUnitPosition, cElevTurbulence, rmFindClosestPointVector, rmFindClosestPoint, rmSetNuggetDifficulty, rmGetIsKOTH, rmAddMerc, rmEnableLocalWater, rmFindCloserArea, rmIsMapType, rmGetHomeCityLevel, rmGetHighHomeCityLevel, rmGetAverageHomeCityLevel, rmGetLowHomeCityLevel, rmGetIsFFA} from "../lib/RandomMap";
-import {rmCreateTradeRoute, rmAddTradeRouteWaypoint, rmAddRandomTradeRouteWaypoints, rmBuildTradeRoute, rmGetTradeRouteWayPoint, rmCreateTradeRouteWaypointsInArea, rmAddRandomTradeRouteWaypointsVector} from "../lib/TradeRoute";
-import {River, Ocean, Lake, Cliff, MapType, Water, Mix, Forest} from "../lib/Terrain";
-import {rmIsObserverMode, rmIsSummerVariant, rmIsWinterVariant, rmIsSpecialEventVariant, rmIsUnexpectedEventsVariant, rmGetMapVariant, trCreateDefendPlan2, activateAprilFoolsTextures, deactivateAprilFoolsTextures, rmActivateRandomEvents, setFastPlaybackFactor, saveUnresponsiveGame, uiToggleUnitPathSimple, uiShowUnitPathSimple, uiHideUnitPathSimple, uiToggleUnitPathRough, uiShowUnitPathRough, uiHideUnitPathRough, uiToggleUnitGatherPointPath, uiShowUnitGatherPointPath, uiHideUnitGatherPointPath, trClearObserverOwnedObjects, setSquadModeByIndex, bUnitGetNumberTargeters, kbUnitGetNumberWorkersIfSeeable, kbUnitIsInventoryFull, kbUnitGetCurrentInventory, kbUnitGetInventoryCapacity} from "../lib/UHC";
-
+import {int, float, double, vector, long, resource, meters, fraction, xsVectorGetX, xsVectorGetY, xsVectorGetZ, xsVectorLength, xsVectorNormalize, xsVectorSet, xsVectorSetX, xsVectorSetY, xsVectorSetZ, cOriginVector} from "${LIB_PATH}/Types";
+import {rmAddAreaCliffEdgeAvoidClass, rmAddAreaConstraint, rmAddAreaInfluencePoint, rmAddAreaInfluenceSegment, rmAddAreaRemoveType, rmAddAreaTerrainLayer, rmAddAreaTerrainReplacement, rmAddAreaToClass, rmAreaID, rmBuildAllAreas, rmBuildArea, rmCreateArea, rmPaintAreaTerrain, rmSetAreaBaseHeight, rmSetAreaCliffEdge, rmSetAreaCliffHeight, rmSetAreaCliffPainting, rmSetAreaCliffType, rmSetAreaCoherence, rmSetAreaForestType, rmSetAreaHeightBlend, rmSetAreaLocation, rmSetAreaLocPlayer, rmSetAreaLocTeam, rmSetAreaMaxBlobDistance, rmSetAreaMaxBlobs, rmSetAreaMinBlobDistance, rmSetAreaMinBlobs, rmSetAreaSize, rmSetAreaSmoothDistance, rmSetAreaTerrainLayerVariance, rmSetAreaTerrainType, rmSetAreaWarnFailure, rmSetAreaWaterType, rmSetAreaMix, rmSetAreaElevationType, rmSetAreaElevationVariation, rmSetAreaElevationMinFrequency, rmSetAreaElevationOctaves, rmSetAreaElevationPersistence, rmSetAreaElevationNoiseBias, rmSetAreaForestDensity, rmSetAreaForestClumpiness, rmSetAreaForestUnderbrush, rmAddAreaCliffRandomWaypoints, rmAddAreaCliffWaypoint, rmSetAreaElevationEdgeFalloffDist, rmSetAreaEdgeFilling} from "${LIB_PATH}/Area";
+import {rmAddConnectionArea, rmAddConnectionConstraint, rmAddConnectionEndConstraint, rmAddConnectionStartConstraint, rmAddConnectionTerrainReplacement, rmAddConnectionToClass, rmBuildConnection, rmCreateConnection, rmSetConnectionBaseHeight, rmSetConnectionBaseTerrainCost, rmSetConnectionCoherence, rmSetConnectionHeightBlend, rmSetConnectionPositionVariance, rmSetConnectionSmoothDistance, rmSetConnectionTerrainCost, rmSetConnectionType, rmSetConnectionWarnFailure, rmSetConnectionWidth} from "${LIB_PATH}/Connection";
+import {rmConstraintID, rmCreateAreaConstraint, rmCreateAreaDistanceConstraint, rmCreateAreaMaxDistanceConstraint, rmCreateAreaOverlapConstraint, rmCreateBoxConstraint, rmCreateClassDistanceConstraint, rmCreateCliffEdgeConstraint, rmCreateCliffEdgeDistanceConstraint, rmCreateCliffEdgeMaxDistanceConstraint, rmCreateCliffRampConstraint, rmCreateCliffRampDistanceConstraint, rmCreateCliffRampMaxDistanceConstraint, rmCreateEdgeConstraint, rmCreateEdgeDistanceConstraint, rmCreateEdgeMaxDistanceConstraint, rmCreateTerrainDistanceConstraint, rmCreateTerrainMaxDistanceConstraint, rmCreateTypeDistanceConstraint, rmCreatePieConstraint, rmCreateTradeRouteDistanceConstraint, rmSetAreaObeyWorldCircleConstraint, rmCreateHCGPConstraint, rmClearClosestPointConstraints, rmAddClosestPointConstraint, rmCreateMaxHeightConstraint} from "${LIB_PATH}/Constraint";
+import {rmAddFairLoc, rmAddFairLocConstraint, rmFairLocXFraction, rmFairLocZFraction, rmGetNumberFairLocs, rmPlaceFairLocs, rmResetFairLocs} from "${LIB_PATH}/FairLoc";
+import {rmAddObjectDefConstraint, rmAddObjectDefItem, rmAddObjectDefToClass, rmCreateObjectDef, rmGetNumberUnitsPlaced, rmGetUnitPlaced, rmGetUnitPlacedOfPlayer, rmPlaceObjectDefAtAreaLoc, rmPlaceObjectDefAtLoc, rmPlaceObjectDefAtRandomAreaOfClass, rmPlaceObjectDefInArea, rmPlaceObjectDefInRandomAreaOfClass, rmPlaceObjectDefPerPlayer, rmSetIgnoreForceToGaia, rmSetObjectDefMaxDistance, rmSetObjectDefMinDistance, rmCreateStartingUnitsObjectDef, rmSetObjectDefAllowOverlap, rmSetObjectDefTradeRouteID, rmPlaceObjectDefAtPoint, rmSetObjectDefHerdAngle, rmSetObjectDefCreateHerd, rmSetObjectDefGarrisonStartingUnits, rmSetObjectDefGarrisonSecondaryUnits} from "${LIB_PATH}/ObjectDef";
+import {rmAddPlayerResource, rmGetNumberPlayersOnTeam, rmGetPlayerCiv, rmGetPlayerCulture, rmGetPlayerName, rmGetPlayerTeam, rmMultiplyPlayerResource, rmPlacePlayer, rmPlacePlayersCircular, rmPlacePlayersLine, rmPlacePlayersSquare, rmPlayerLocXFraction, rmPlayerLocZFraction, rmSetPlacementSection, rmSetPlacementTeam, rmSetPlayerArea, rmSetPlayerLocation, rmSetPlayerPlacementArea, rmSetPlayerResource, rmSetTeamArea, rmSetTeamSpacingModifier} from "${LIB_PATH}/Player";
+import {rmAddTriggerCondition, rmAddTriggerEffect, rmAddUnitsToArmy, rmCreateArmy, rmCreateTrigger, rmSetTriggerActive, rmSetTriggerConditionParam, rmSetTriggerConditionParamArmy, rmSetTriggerConditionParamFloat, rmSetTriggerConditionParamInt, rmSetTriggerEffectParam, rmSetTriggerEffectParamArmy, rmSetTriggerEffectParamFloat, rmSetTriggerEffectParamInt, rmSetTriggerLoop, rmSetTriggerPriority, rmSetTriggerRunImmediately, rmSetVCFile, rmSwitchToTrigger, rmTriggerID} from "${LIB_PATH}/Trigger";
+import {rmAreaFractionToTiles, rmAreaTilesToFraction, rmDegreesToRadians, rmMetersToTiles, rmTilesToMeters, rmXFractionToMeters, rmXFractionToTiles, rmXMetersToFraction, rmXTilesToFraction, rmZFractionToMeters, rmZFractionToTiles, rmZMetersToFraction, rmZTilesToFraction} from "${LIB_PATH}/Converter";
+import {rmCreateGrouping, rmSetGroupingMinDistance, rmSetGroupingMaxDistance, rmAddGroupingConstraint, rmAddGroupingToClass, rmPlaceGroupingAtLoc} from "${LIB_PATH}/Grouping";
+import {rmRiverCreate, rmRiverAddWaypoint, rmRiverSetShallowRadius, rmRiverAddShallow, rmRiverSetBankNoiseParams, rmRiverBuild, rmRiverSetConnections} from "${LIB_PATH}/River";
+import {cMapSize, cNumberNonGaiaPlayers, cNumberPlayers, cNumberTeams, rmClassID, rmDefineClass, rmDefineConstant, rmEchoError, rmEchoInfo, rmEchoWarning, rmGetSeaLevel, rmRandFloat, rmRandInt, rmSetGaiaCiv, rmSetLightingSet, rmSetMapSize, rmSetSeaLevel, rmSetSeaType, rmSetStatusText, rmTerrainInitialize, sqrt, rmGetCivID, rmAllocateSubCivs, rmSetSubCiv, rmSetWindMagnitude, rmSetGlobalRain, rmSetGlobalSnow, rmSetMapElevationParameters, rmSetBaseTerrainMix, rmSetMapType, rmSetWorldCircleConstraint, rmGetMapXSize, rmGetNomadStart, rmGetUnitPosition, cElevTurbulence, rmFindClosestPointVector, rmFindClosestPoint, rmSetNuggetDifficulty, rmGetIsKOTH, rmAddMerc, rmEnableLocalWater, rmFindCloserArea, rmIsMapType, rmGetHomeCityLevel, rmGetHighHomeCityLevel, rmGetAverageHomeCityLevel, rmGetLowHomeCityLevel, rmGetIsFFA} from "${LIB_PATH}/RandomMap";
+import {rmCreateTradeRoute, rmAddTradeRouteWaypoint, rmAddRandomTradeRouteWaypoints, rmBuildTradeRoute, rmGetTradeRouteWayPoint, rmCreateTradeRouteWaypointsInArea, rmAddRandomTradeRouteWaypointsVector} from "${LIB_PATH}/TradeRoute";
+${extensions.replace(/#LIB#/g, LIB_PATH)}
 ${map_info} 
 
 ${includes}
@@ -336,7 +356,7 @@ ${xs}`;
     fs.writeFileSync(filename.replace(/\//g, '\\'), xs.replace(/'/g, '"'));
     console.log(`\x1b[1m\x1b[42m Success \x1b[0m\nTranspiled to \x1b[33m${filename}\x1b[0m`);
     if (mapinfo != undefined)
-        console.log(`XML map info written to: \x1b[33m${filename.replace(/\.xs/, ".xml")}\x1b[0m`);
+        console.log(`XML map info written to: \x1b[33m${filename.replace(/\//g, '\\').replace(/\.xs/, ".xml")}\x1b[0m`);
     console.log('');
 }
 process.argv.slice(2).forEach(file => {
@@ -346,6 +366,6 @@ process.argv.slice(2).forEach(file => {
     else if (file.endsWith(".xts") || file.endsWith(".ts"))
         TypeScriptToXS(file);
     else
-        console.log(`\x1b[1m\x1b[43m Warning \x1b[40m  -  Unsupported file extension:\x1b[0m
+        console.log(`\x1b[1m\x1b[41m FileError \x1b[40m  -  Unsupported file extension:\x1b[0m
         \x1b[90mcan't convert \x1b[33m${file}\x1b[0m\n`);
 });

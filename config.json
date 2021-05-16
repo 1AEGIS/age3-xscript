@@ -1,7 +1,12 @@
 {
     "sourceDir": "workdir/source",
     "outDir": "workdir/out",
+    "libDir": "../lib",
     "ignoreWarnings" : false,
     "ignoreErrors" : false,
-    "forceOpen" : true
+    "forceOpen" : true,
+    "extensions": [
+        "TAD",
+        "UHC"
+    ]
 }

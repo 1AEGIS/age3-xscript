@@ -27,35 +27,35 @@ export declare function rmSetTriggerActive(active: boolean): void;
 /**
  * Adds a parameter to the current condition.
  */
-export declare function rmSetTriggerConditionParam(paramName: string, value: string, add?: boolean): void;
+export declare function rmSetTriggerConditionParam(paramName: string, value: string, add: boolean): void;
 /**
  * Adds an army parameter to the current condition.
  */
-export declare function rmSetTriggerConditionParamArmy(paramName: string, playerID: int, armyID: int, add?: boolean): void;
+export declare function rmSetTriggerConditionParamArmy(paramName: string, playerID: int, armyID: int, add: boolean): void;
 /**
  * Adds a float parameter to the current condition.
  */
-export declare function rmSetTriggerConditionParamFloat(paramName: string, value: float, add?: boolean): void;
+export declare function rmSetTriggerConditionParamFloat(paramName: string, value: float, add: boolean): void;
 /**
  * Adds an integer parameter to the current condition.
  */
-export declare function rmSetTriggerConditionParamInt(paramName: string, value: int, add?: boolean): void;
+export declare function rmSetTriggerConditionParamInt(paramName: string, value: int, add: boolean): void;
 /**
  * Adds a parameter to the current effect.
  */
-export declare function rmSetTriggerEffectParam(paramName: string, value: string, add?: boolean): void;
+export declare function rmSetTriggerEffectParam(paramName: string, value: string, add: boolean): void;
 /**
  * Adds an army parameter to the current effect.
  */
-export declare function rmSetTriggerEffectParamArmy(paramName: string, playerID: int, armyID: int, add?: boolean): void;
+export declare function rmSetTriggerEffectParamArmy(paramName: string, playerID: int, armyID: int, add: boolean): void;
 /**
  * Adds a float parameter to the current effect.
  */
-export declare function rmSetTriggerEffectParamFloat(paramName: string, value: float, add?: boolean): void;
+export declare function rmSetTriggerEffectParamFloat(paramName: string, value: float, add: boolean): void;
 /**
  * Adds an integer parameter to the current effect.
  */
-export declare function rmSetTriggerEffectParamInt(paramName: string, value: int, add?: boolean): void;
+export declare function rmSetTriggerEffectParamInt(paramName: string, value: int, add: boolean): void;
 /**
  * Sets the current trigger looping.
  */

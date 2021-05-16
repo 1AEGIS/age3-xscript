@@ -1,5 +1,5 @@
 import {int, float, double, vector, long} from "./Types";
-import {Water} from "./Terrain";
+import {Water} from "./extensions/TAD/Terrain";
 
 
 export declare function rmRiverCreate(arg0: int, riverName: Water, minWidth: int, maxWidth: int, arg4: int, arg5: int): int;

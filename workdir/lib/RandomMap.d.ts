@@ -1,5 +1,5 @@
 import {int, float, double, vector, long} from "./Types";
-import {MapType, Mix} from "./Terrain";
+import {MapType, Mix} from "./extensions/TAD/Terrain";
 
 /**
  * 0 = normal size 1 = large size
@@ -49,11 +49,11 @@ export declare function rmGetSeaLevel(): float;
 /**
  * Returns a random float between min and max.
  */
-export declare function rmRandFloat(min?: float, max?: float): float;
+export declare function rmRandFloat(min: float, max: float): float;
 /**
  * Returns a random integer between min and max.
  */
-export declare function rmRandInt(min?: int, max?: int): int;
+export declare function rmRandInt(min: int, max: int): int;
 /**
  * Sets Gaia's civilization.
  */
