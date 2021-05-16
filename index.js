@@ -340,7 +340,7 @@ ${xs}`;
     console.log('');
 }
 process.argv.slice(2).forEach(file => {
-    file = file.replace(/\\/g, '/').replace(/"'/g, '');
+    file = file.replace(/\\/g, '/').replace(/"|'/g, '');
     if (file.endsWith(".xs"))
         XStoTypeScript(file);
     else if (file.endsWith(".xts") || file.endsWith(".ts"))

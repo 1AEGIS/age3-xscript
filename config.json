@@ -1,6 +1,6 @@
 {
-    "sourceDir": "examples/source",
-    "outDir": "examples/out",
+    "sourceDir": "workdir/source",
+    "outDir": "workdir/out",
     "ignoreWarnings" : false,
     "ignoreErrors" : false,
     "forceOpen" : true
