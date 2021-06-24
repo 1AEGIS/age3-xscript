@@ -74,7 +74,7 @@ Here's the brief structure of a valid .XTS script:
 /**
  * -----------------------------------------------------
  * THIS SCRIPT WAS GENERATED FROM AN .XS SCRIPT
- * Original script: **`**../great plains.xs`
+ * Original script: `../great plains.xs`
  * -----------------------------------------------------
  */
 
@@ -163,7 +163,7 @@ Most of the following script doesn't need much explanation. Keep these .XTS limi
  - **`var`** variable declaration is preferred. You may use **`let`** or **`const`**, but they will all be transpiled to the .XS's **`var`**-like (function scope) variable declarations, without runtime **`const`** behavior.
  - Keep in mind that all you write should have an XS equivalent. Don't use advanced TypeScript stuff such as:
     - arrays, objects, classes
-    - string methods (such as **`**.replace`), string templates
+    - string methods (such as **`.replace`**), string templates
     - **`for ... of`**, **`for ... in`**
     - **`yield`**, **`async`**, etc
     - **`Math`**, **`Object`**, etc

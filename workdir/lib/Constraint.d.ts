@@ -25,7 +25,7 @@ export declare function rmCreateAreaOverlapConstraint(name: string, areaID: int)
  */
 export declare function rmCreateBoxConstraint(name: string, startX: float, startZ: float, endX: float, endZ: float, bufferFraction?: float): int;
 /**
- * Make a class distance constraint taht forces something to stay away from everything in the given class.
+ * Make a class distance constraint that forces something to stay away from everything in the given class.
  */
 export declare function rmCreateClassDistanceConstraint(name: string, classID: int, distance: float): int;
 /**
