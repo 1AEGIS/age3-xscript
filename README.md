@@ -238,7 +238,7 @@ Here are all the types for which this is the case:
 The allowed values for these types depend on the extensions you've enabled.
 
 #### **Got it, but I'm writing maps for a mod that has new terrain.**
-Then you can either use **`as`** or, to get proper autocomplete, make an extension for your mod - just explore the structure of *`extensions\TNE\index.xts`*, *`extensions\TNE\Terrain.d.ts`* and *`workdir\lib\extensions\TNE\Terrain.d.ts`* (the last two are the same) and make o copy with your mod's terrain.
+Then you can either use **`as`** or, to get proper autocomplete, make an extension for your mod - just explore the structure of *`extensions\TNE\index.xts`*, *`extensions\TNE\Terrain.d.ts`* and *`workdir\lib\extensions\TNE\Terrain.d.ts`* (the last two are the same) and make a copy with your mod's terrain.
 
 #### **Will this work with DE?**
 There are no guarantees, but provided DE's RMS structure stays the same, it should work. Some terrain types and function declarations must be missing though, unless somebody makes an extension for DE.

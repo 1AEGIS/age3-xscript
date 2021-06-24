@@ -1,4 +1,4 @@
-import {int, float, double, vector, long} from "./Types";
+import {int, float, double, vector, long} from "../../Types";
 
 
 export declare function rmIsObserverMode(): boolean;
