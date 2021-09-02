@@ -160,6 +160,7 @@ function name(param: int = 0): int { ... }
 Most of the following script doesn't need much explanation. Keep these .XTS limitations in mind:
  - Explicitly define any variable's type and initial value - as you would with the .XS script.
  - Instead of the TypeScrpit's **`number`**, use **`int`**, **`float`**, **`double`** or **`long`** types.
+ - Avoid using **`'`** and **`"`** simultaneously, as in **`s = "don't do this";`**
  - **`var`** variable declaration is preferred. You may use **`let`** or **`const`**, but they will all be transpiled to the .XS's **`var`**-like (function scope) variable declarations, without runtime **`const`** behavior.
  - Keep in mind that all you write should have an XS equivalent. Don't use advanced TypeScript stuff such as:
     - arrays, objects, classes

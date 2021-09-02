@@ -279,7 +279,7 @@ function TypeScriptToXS(filename, isInclude = false) {
     }
     if (failed)
         return;
-    xs = xs.replace(/\s*import\s*\{[^\}]*\}\s*from\s*"\.?\/?(..\/)*(?:(?:lib\/Types)|(?:lib\/Area)|(?:lib\/Connection)|(?:lib\/Constraint)|(?:lib\/FairLoc)|(?:lib\/ObjectDef)|(?:lib\/Player)|(?:lib\/Trigger)|(?:lib\/Converter)|(?:lib\/Grouping)|(?:lib\/River)|(?:lib\/RandomMap)|(?:lib\/Terrain)|(?:lib\/TradeRoute)|(?:lib\/UHC))";\s*\n*/g, '');
+    // xs = xs.replace(/\s*import\s*\{[^\}]*\}\s*from\s*"\.?\/?(..\/)*(?:(?:lib\/Types)|(?:lib\/Area)|(?:lib\/Connection)|(?:lib\/Constraint)|(?:lib\/FairLoc)|(?:lib\/ObjectDef)|(?:lib\/Player)|(?:lib\/Trigger)|(?:lib\/Converter)|(?:lib\/Grouping)|(?:lib\/River)|(?:lib\/RandomMap)|(?:lib\/Terrain)|(?:lib\/TradeRoute)|(?:lib\/UHC))";\s*\n*/g, '');
     xs = xs.replace(/(?:\s?\/\*\*(?:(?!\*\/)([^$]))*THIS SCRIPT WAS GENERATED FROM AN .XS SCRIPT(?:(?!\*\/)([^$]))*\*\/)\s*/g, '');
     xs = xs.replace(/\s*:\s*/g, ': ').replace(/ ?\{/g, ' {');
     xs = xs.replace(/:\s*boolean/g, ": bool");
@@ -301,6 +301,35 @@ function TypeScriptToXS(filename, isInclude = false) {
     xs = xs.replace(/for\s*\([^{]*\)\s*\{/g, dec => {
         const index_name = /(?<=for\s*\(\s*)\w+(?=\s*=[^{]*\)\s*\{)/.exec(dec)[0];
         return dec.replace(RegExp(`(?<=for\\s*\\(\\s*${index_name}\\s*=[^;]*;\\s*)${index_name}\\s*(?=<=?[^{]*\\)\\s*\\{)`, 'g'), '');
+    });
+    let libs = [
+        "Types",
+        "Area",
+        "Connection",
+        "Constraint",
+        "FairLoc",
+        "ObjectDef",
+        "Player",
+        "Trigger",
+        "Converter",
+        "Grouping",
+        "River",
+        "RandomMap",
+        "Terrain",
+        "TradeRoute"
+    ];
+    EXTENSIONS.forEach(ext => {
+        try {
+            libs.push((/(?<=import\s*\{[^\}]*\}\s*from\s*"[^"]*\/)\w+(?=";)/g.exec(`${fs.readFileSync(`./extensions/${ext}/index.xts`).toString()}\n`) || [''])[0]);
+        }
+        catch (e) {
+            if (!IGNORE_ERRORS)
+                console.log(`\x1b[1m\x1b[41m ExtensionError \x1b[40m  -  File does not exist:\x1b[0m
+         \x1b[90mfile not found: \x1b[33m./extensions/${ext}/index.xts\x1b[0m\n`);
+        }
+    });
+    libs.forEach(l => {
+        xs = xs.replace(RegExp(`include\\s*"${l}.xs"\\s*;\\n?`, 'g'), '');
     });
     xs = `
 /**
